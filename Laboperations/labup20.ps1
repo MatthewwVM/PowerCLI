@@ -32,11 +32,11 @@ Write-Host -ForegroundColor Green -BackgroundColor Black "Starting 15 minutes of
 Start-Sleep -s 1800
 
 $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
-$ESXiR = Get-Content "C:\Passwords\esxir.txt" | ConvertTo-SecureString
+$ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
 $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
 foreach ($nodes in $vSANnodes) {
-    
+
     Connect-viserver -server $nodes -credential $ESXiC | Out-Null
     
     Set-VMHost -State "Connected" -confirm:$false | Out-Null
@@ -47,9 +47,9 @@ foreach ($nodes in $vSANnodes) {
 
 Start-Sleep -s 60
 
-$password = Get-Content "C:\Passwords\vCenter.txt" | ConvertTo-SecureString
+$password = Get-Content "C:\ssc\vcenter.txt" | ConvertTo-SecureString
 $credential = New-Object System.Management.Automation.PSCredential("Administrator@vsphere.local",$password)
-$ESXiR = Get-Content "C:\Passwords\esxir.txt" | ConvertTo-SecureString
+$ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
 $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
     Connect-viserver -server pe-esx-40.webblab.local -credential $ESXiC | Out-Null
