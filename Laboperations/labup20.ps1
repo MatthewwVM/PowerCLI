@@ -37,7 +37,7 @@ $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
 foreach ($nodes in $vSANnodes) {
 
-    Connect-viserver -server $nodes -credential $ESXiC | Out-Null
+    Connect-VIServer -server $nodes -credential $ESXiC | Out-Null
     
     Set-VMHost -State "Connected" -confirm:$false | Out-Null
 
@@ -52,7 +52,7 @@ $credential = New-Object System.Management.Automation.PSCredential("Administrato
 $ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
 $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
-    Connect-viserver -server pe-esx-40.webblab.local -credential $ESXiC | Out-Null
+    Connect-VIServer -server pe-esx-40.webblab.local -credential $ESXiC | Out-Null
 
     Get-VM -name "VAN-VC-02" | Start-VM -confirm:$false
 
@@ -62,9 +62,9 @@ $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
     
     Start-Sleep -Seconds 900
 
-    Connect-viserver -server van-vc-01.webblab.local -credential $credential
+    Connect-VIServer -server van-vc-01.webblab.local -credential $credential
 
-    get-vm -location vSANcluster | Where-Object {$_.PowerState -eq "poweredoff"} | Start-VM
+    Get-VM -location vSANcluster | Where-Object {$_.PowerState -eq "poweredoff"} | Start-VM
 
 
 
