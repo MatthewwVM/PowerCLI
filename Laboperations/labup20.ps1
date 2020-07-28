@@ -5,12 +5,12 @@ $vcpingreply = $vcpingcheck[2] -match "Reply"
 
 if ($vcpingreply -eq $false) {
 
-    Write-Host "vCenter ping failed, booting up lab!"
+    Write-Host -BackgroundColor Black -ForegroundColor Green "vCenter ping failed, booting up lab!"
 
   
 }else {
 
-    Write-Host "vCenter is already on, exiting script"
+    Write-Host -BackgroundColor Black -ForegroundColor Green "vCenter is already on, exiting script"
 
     Start-Sleep -Seconds 10
     
