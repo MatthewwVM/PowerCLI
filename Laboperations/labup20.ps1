@@ -28,8 +28,7 @@ Foreach ($iDrac in $iDracAddresses) {
     Get-Date
 }
 
-Write-Host -ForegroundColor Green -BackgroundColor Black "Starting 15 minutes of sleep to allow boot"
-Start-Sleep -s 0
+Write-Host -ForegroundColor Green -BackgroundColor Black "Hosts are booting..."
 
 $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
 $ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
@@ -42,7 +41,9 @@ foreach ($vsnode in $vSANnodes) {
 
         Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to $vsnode"
 
-        Start-Sleep -Seconds 30
+        Write-Host -BackgroundColor Black -ForegroundColor Green -NoNewline "."
+
+        Start-Sleep -Seconds 10
                 
     } until ($connecttest.IsConnected -eq $true)
 }
@@ -81,6 +82,10 @@ $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
         $vcconnect = Connect-VIServer -Server van-vc-01.webblab.local -Credential $credential
 
         Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to vCenter"
+
+        Write-Host -BackgroundColor Black -ForegroundColor Green -NoNewline "."
+
+        Start-Sleep -Seconds 10
         
     } until ($vcconnect.IsConnected -eq $true)
 
