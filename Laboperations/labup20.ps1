@@ -29,17 +29,33 @@ Foreach ($iDrac in $iDracAddresses) {
 }
 
 Write-Host -ForegroundColor Green -BackgroundColor Black "Starting 15 minutes of sleep to allow boot"
-Start-Sleep -s 1800
+Start-Sleep -s 0
 
 $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
 $ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
 $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
+
+foreach ($vsnode in $vSANnodes) {
+    do {
+
+        $connecttest = Connect-VIServer -Server $vsnode -Credential $ESXiC
+
+        Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to $vsnode"
+
+        Start-Sleep -Seconds 30
+                
+    } until ($connecttest.IsConnected -eq $true)
+}
+
+Disconnect-VIServer -Server * -Confirm:$false
 
 foreach ($nodes in $vSANnodes) {
 
     Connect-VIServer -server $nodes -credential $ESXiC | Out-Null
     
     Set-VMHost -State "Connected" -confirm:$false | Out-Null
+
+    Write-Host -BackgroundColor Black -ForegroundColor Green "$nodes has exited MM..."
 
     Disconnect-VIServer -confirm:$false | Out-Null
 
@@ -58,11 +74,17 @@ $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
     Disconnect-VIServer -confirm:$false
 
-    Write-Host -ForegroundColor Green -BackgroundColor Black "Starting sleep to allow vCenter to boot"
+    Write-Host -ForegroundColor Green -BackgroundColor Black "vCenter is booting..."
     
-    Start-Sleep -Seconds 900
+    do {
+        
+        $vcconnect = Connect-VIServer -Server van-vc-01.webblab.local -Credential $credential
 
-    Connect-VIServer -server van-vc-01.webblab.local -credential $credential
+        Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to vCenter"
+        
+    } until ($vcconnect.IsConnected -eq $true)
+
+    Write-Host -BackgroundColor Black -ForegroundColor Green "Connected to vCenter, starting all VM's"
 
     Get-VM -location vSANcluster | Where-Object {$_.PowerState -eq "poweredoff"} | Start-VM
 
