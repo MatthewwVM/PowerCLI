@@ -76,7 +76,7 @@ Move-VM "$vCenterVM" -destination pe-esx-40.webblab.local
     Disconnect-viserver -confirm:$false
 
     $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
-    $ESXiR = Get-Content "C:\Passwords\esxir.txt" | ConvertTo-SecureString
+    $ESXiR = Get-Content "C:\ssc\esxi.txt" | ConvertTo-SecureString
     $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
     foreach ($vSANhost in $vSANnodes) {
