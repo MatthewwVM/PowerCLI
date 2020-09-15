@@ -35,11 +35,12 @@ $ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
 $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
 
 foreach ($vsnode in $vSANnodes) {
+
+    Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to $vsnode"
+
     do {
 
-        $connecttest = Connect-VIServer -Server $vsnode -Credential $ESXiC
-
-        Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to $vsnode"
+        $connecttest = Connect-VIServer -Server $vsnode -Credential $ESXiC | Out-Null
 
         Write-Host -BackgroundColor Black -ForegroundColor Green -NoNewline "."
 
