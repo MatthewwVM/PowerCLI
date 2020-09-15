@@ -54,8 +54,9 @@ Move-VM "$vCenterVM" -destination pe-esx-40.webblab.local
      Disconnect-viserver -confirm:$false
 
 
-     $ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
+    $ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
     $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
+    $vCenterVM = "VAN-VC-02"
 
     Connect-viserver -server pe-esx-40.webblab.local -Credential $ESXiC
 
