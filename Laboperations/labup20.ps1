@@ -51,6 +51,10 @@ foreach ($vsnode in $vSANnodes) {
 
 Disconnect-VIServer -Server * -Confirm:$false
 
+$vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
+$ESXiR = Get-Content "C:\ssc\ESXi.txt" | ConvertTo-SecureString
+$ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
+
 foreach ($nodes in $vSANnodes) {
 
     Connect-VIServer -server $nodes -credential $ESXiC | Out-Null
@@ -59,7 +63,7 @@ foreach ($nodes in $vSANnodes) {
 
     Write-Host -BackgroundColor Black -ForegroundColor Green "$nodes has exited MM..."
 
-    Disconnect-VIServer -confirm:$false | Out-Null
+    Disconnect-VIServer -server * -confirm:$false | Out-Null
 
 }
 
