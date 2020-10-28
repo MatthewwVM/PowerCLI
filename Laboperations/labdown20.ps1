@@ -26,7 +26,7 @@ Connect-viserver -server van-vc-01.webblab.local -Credential $credential
 
 $vCenterVM = Get-VM -name "VAN-VC-02"
 
-$onVMs = get-vm -location vSANcluster | Where-Object {$_.PowerState -eq "poweredon"} | Where-Object {$_.Name -ne "VAN-VC-02"}
+$onVMs = Get-VM -location vSANcluster | Where-Object {($_.Powerstate -eq "PoweredOn") -and ($_.Name -ne "VAN-VC-02") -and ($_.Name -notlike "*vCL*")}
 
 Move-VM "$vCenterVM" -destination pe-esx-40.webblab.local
 #update to check for tools and force stop or graceful shut down
