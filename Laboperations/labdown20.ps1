@@ -74,6 +74,31 @@ Move-VM "$vCenterVM" -destination pe-esx-40.webblab.local
 
     Write-Host -background black -foreground green "$vCenterVM is shut down, moving hosts to MM"
 
+    Write-Host -BackgroundColor Black -ForegroundColor Green "Finding if any other VM's are on"
+
+    $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
+    $ESXiR = Get-Content "C:\ssc\esxi.txt" | ConvertTo-SecureString
+    $ESXiC = New-Object System.Management.Automation.PSCredential("root",$ESXiR)
+
+    foreach ($vSANhost in $vSANnodes) {
+        Connect-viserver -server $vSANhost -Credential $ESXiC
+
+        $loVM = Get-VM | Where-Object {$_.PowerState -eq "PoweredOn"}
+
+        if ($loVM.Count -gt 0 ) {
+
+            Write-Host -ForegroundColor Green -BackgroundColor Black "VM's were found, powering off"
+
+            Stop-VM -VM $loVM -Confirm:$false
+
+            } else {
+
+                Write-Host -ForegroundColor Green -BackgroundColor Black "No VM's found"
+                
+            }
+            
+        }
+
     Disconnect-viserver -confirm:$false
 
     $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
@@ -90,6 +115,9 @@ Move-VM "$vCenterVM" -destination pe-esx-40.webblab.local
         disconnect-viserver -confirm:$false
 
             }
+
+     Write-Host -background black -foreground green "$vSANhost has been put in MM"
+
 
     $vSANnodes = ("pe-esx-10.webblab.local", "pe-esx-20.webblab.local", "pe-esx-30.webblab.local", "pe-esx-40.webblab.local")
     $ESXiR = Get-Content "C:\Passwords\esxir.txt" | ConvertTo-SecureString
