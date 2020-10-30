@@ -39,11 +39,9 @@ foreach ($vsnode in $vSANnodes) {
 
     Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to $vsnode"
 
-    $connecttest = Connect-VIServer -Server $vsnode -Credential $ESXiC
-
-    Write-Host -BackgroundColor Black -ForegroundColor Green "Attempting to connect to $vsnode"
-
     do {
+        $connecttest = Connect-VIServer -Server $vsnode -Credential $ESXiC
+        
         Write-Host -BackgroundColor Black -ForegroundColor Green -NoNewline "."
 
         Start-Sleep -Seconds 10
