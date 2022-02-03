@@ -1,21 +1,22 @@
 
-#example login through connect-viserver
-Connect-VIServer -server 10.10.10.2 -Credential $credential
+#This script assumes you are already conected to a vCenter server through Powercli
 
-$Cluster = Get-Cluster -Name "Cluster-1"
-$r5sp = Get-SpbmStoragePolicy -Name "FTT=1 _Erasure"
-$r1sp = Get-SpbmStoragePolicy -Name "vSAN Default Storage Policy"
-$r5objects = Get-SpbmEntityConfiguration -StoragePolicy $r5sp
+#Create our storage policy variables, we are gathering all the VM's on a givent storage policy so we can change them
+$VMobjTOchange = Read-Host "Enter the name of the VM's storage policy you would like to change (this will take all VM's of that given storage policy.)"
+$ChangeVMto = Read-Host "What storage policy would you like the VM's to change to?"
+$VMobjofSP = Get-SpbmEntityConfiguration -StoragePolicy "$VMobjTOchange"
+$Cluster = "Cluster-1"
 
-if ($r5objects -ne $null ) {
-
-    foreach ($oldobject in $r5objects) {
+#Identify if the storage policy given has any VM's
+if ($VMobjofSP -ne $null ) {
+    #If there are objects, iterate through each object and change them.  This will allow objects to rebuild before moving to next object
+    foreach ($VMobjs in $VMobjofSP) {
     
-        Write-Host "Updating Storage Policy for $oldobject" -ForegroundColor "Yellow"
+        Write-Host "Updating Storage Policy for $VMobjs" -ForegroundColor "Yellow"
     
-        Set-SPBMEntityConfiguration -Configuration $OldObject -StoragePolicy $r1sp
+        Set-SPBMEntityConfiguration -Configuration $VMobjs -StoragePolicy $ChangeVMto
     
-        Write-Host "Updated Storage Policy for $oldobject, now waiting for resyncs to complete" -ForegroundColor "green"
+        Write-Host "Updated Storage Policy for $VMobjs, now waiting for resyncs to complete" -ForegroundColor "green"
         
             While ((Get-VsanResyncingComponent -Cluster $Cluster)) { 
     
@@ -24,12 +25,12 @@ if ($r5objects -ne $null ) {
         
         Write-Host "* " -ForegroundColor "Green"    
         
-        Write-Host "Resyncs for $oldobject Complete" -ForegroundColor Cyan
+        Write-Host "Resyncs for $VMobjs Complete" -ForegroundColor Cyan
         }
     
 } else {
     
-    Write-Host -ForegroundColor Green -BackgroundColor Black "No objects are erasure coded"
+    Write-Host -ForegroundColor Green -BackgroundColor Black "No VM objects are on the $VMobjTOchange storage policy"
 
 }
 
