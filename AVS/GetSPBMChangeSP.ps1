@@ -1,7 +1,7 @@
 
 #This script assumes you are already conected to a vCenter server through Powercli
 
-#Create our storage policy variables, we are gathering all the VM's on a givent storage policy so we can change them
+#Create our storage policy variables, we are gathering all the VM's on a give storage policy so we can change them
 $VMobjTOchange = Read-Host "Enter the name of the VM's storage policy you would like to change (this will take all VM's of that given storage policy.)"
 $ChangeVMto = Read-Host "What storage policy would you like the VM's to change to?"
 $VMobjofSP = Get-SpbmEntityConfiguration -StoragePolicy "$VMobjTOchange"
