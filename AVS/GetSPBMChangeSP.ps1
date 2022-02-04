@@ -1,4 +1,5 @@
 
+#This is a script to help make bulk changes to storage policies in an AVS vCenter.  You can read more about how and why here: https://dinocloud.net/2022/02/04/managing-vsan-policies-in-azure-vmware-solution/
 #This script assumes you are already conected to a vCenter server through Powercli
 
 #Create our storage policy variables, we are gathering all the VM's on a give storage policy so we can change them
